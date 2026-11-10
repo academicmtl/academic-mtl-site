@@ -1,0 +1,795 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Academic MTL</title>
+<meta name="description" content="An end-to-end platform for Montreal fashion graduates — design, production, and sales, under one roof." />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,400&family=Archivo:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper: #EDEAE1;
+    --paper-deep: #E1DBCB;
+    --paper-raise: #F5F3EC;
+    --ink: #1E1C18;
+    --ink-soft: #6B675C;
+    --line: #CFC8B8;
+    --accent: #2B3A67;
+    --accent-deep: #1B2747;
+    --accent-ink: #FFFFFF;
+    --shadow: rgba(30,28,24,0.08);
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --paper: #171510;
+      --paper-deep: #211E17;
+      --paper-raise: #1D1B15;
+      --ink: #ECE8DD;
+      --ink-soft: #A39C89;
+      --line: #3C382C;
+      --accent: #8B9BD6;
+      --accent-deep: #B7C1E6;
+      --accent-ink: #14172A;
+      --shadow: rgba(0,0,0,0.35);
+    }
+  }
+  :root[data-theme="dark"]{
+    --paper: #171510;
+    --paper-deep: #211E17;
+    --paper-raise: #1D1B15;
+    --ink: #ECE8DD;
+    --ink-soft: #A39C89;
+    --line: #3C382C;
+    --accent: #8B9BD6;
+    --accent-deep: #B7C1E6;
+    --accent-ink: #14172A;
+    --shadow: rgba(0,0,0,0.35);
+  }
+
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    background:var(--paper);
+    color:var(--ink);
+    font-family:'Archivo', 'Helvetica Neue', Arial, sans-serif;
+    -webkit-font-smoothing:antialiased;
+    overflow-x:hidden;
+  }
+  @media (prefers-reduced-motion: reduce){
+    html{scroll-behavior:auto;}
+    *{animation-duration:0.01ms !important; transition-duration:0.01ms !important;}
+  }
+
+  h1,h2,h3,.serif{
+    font-family:'Fraunces', Georgia, serif;
+    font-weight:500;
+    text-wrap:balance;
+    margin:0;
+  }
+  .mono{
+    font-family:'JetBrains Mono', ui-monospace, monospace;
+    text-transform:uppercase;
+    letter-spacing:0.09em;
+  }
+  a{color:inherit;}
+  button{font-family:inherit;}
+
+  .wrap{
+    max-width:1160px;
+    margin:0 auto;
+    padding:0 28px;
+  }
+  @media (max-width:640px){ .wrap{ padding:0 20px; } }
+
+  /* ---------- NAV ---------- */
+  header.site{
+    position:sticky; top:0; z-index:50;
+    background:color-mix(in srgb, var(--paper) 88%, transparent);
+    backdrop-filter:blur(10px);
+    border-bottom:1px solid var(--line);
+  }
+  .nav-inner{
+    max-width:1160px; margin:0 auto; padding:18px 28px;
+    display:flex; align-items:center; justify-content:space-between;
+    gap:24px;
+  }
+  .brand{
+    font-family:'Fraunces', serif; font-weight:500; font-size:1.15rem;
+    letter-spacing:0.01em; text-decoration:none; white-space:nowrap;
+    cursor:pointer; background:none; border:none; color:var(--ink); padding:0;
+  }
+  .brand em{ font-style:italic; color:var(--accent); font-weight:400; }
+  nav.links{ display:flex; gap:30px; align-items:center; }
+  nav.links button{
+    background:none; border:none; cursor:pointer; color:var(--ink-soft);
+    font-size:0.78rem; padding:4px 0; position:relative;
+  }
+  nav.links button.active{ color:var(--ink); }
+  nav.links button.active::after{
+    content:""; position:absolute; left:0; right:0; bottom:-6px; height:1px; background:var(--accent);
+  }
+  nav.links button:focus-visible, .brand:focus-visible, .btn:focus-visible, .tag-card:focus-visible, input:focus-visible, textarea:focus-visible{
+    outline:2px solid var(--accent); outline-offset:2px;
+  }
+  .nav-cta{ display:flex; align-items:center; gap:18px; }
+  .menu-toggle{ display:none; background:none; border:1px solid var(--line); border-radius:2px; padding:8px 10px; cursor:pointer; color:var(--ink); }
+  @media (max-width:760px){
+    nav.links{ display:none; }
+    .menu-toggle{ display:inline-flex; }
+    nav.links.open{
+      display:flex; flex-direction:column; align-items:flex-start; gap:0;
+      position:absolute; top:100%; left:0; right:0; background:var(--paper);
+      border-bottom:1px solid var(--line); padding:6px 28px 18px;
+    }
+    nav.links.open button{ padding:10px 0; width:100%; text-align:left; }
+    nav.links.open button.active::after{ display:none; }
+  }
+
+  /* ---------- BUTTONS / TAGS ---------- */
+  .btn{
+    display:inline-flex; align-items:center; gap:8px;
+    font-family:'JetBrains Mono', monospace; font-size:0.72rem;
+    text-transform:uppercase; letter-spacing:0.09em;
+    padding:13px 22px; border-radius:1px; cursor:pointer;
+    border:1px solid var(--ink); background:transparent; color:var(--ink);
+    text-decoration:none; transition:background 0.15s ease, color 0.15s ease, border-color .15s ease;
+  }
+  .btn.solid{ background:var(--accent); border-color:var(--accent); color:var(--accent-ink); }
+  .btn.solid:hover{ background:var(--accent-deep); border-color:var(--accent-deep); }
+  .btn:not(.solid):hover{ background:var(--ink); color:var(--paper); }
+  .btn svg{ width:12px; height:12px; }
+
+  .eyebrow{
+    font-family:'JetBrains Mono', monospace; font-size:0.72rem;
+    text-transform:uppercase; letter-spacing:0.14em; color:var(--accent);
+    display:flex; align-items:center; gap:10px;
+  }
+  .eyebrow::before{ content:""; width:22px; height:1px; background:var(--accent); display:inline-block; }
+
+  hr.rule{ border:none; border-top:1px solid var(--line); margin:0; }
+
+  /* ---------- PAGES ---------- */
+  .page{ display:none; }
+  .page.active{ display:block; animation:fade .35s ease; }
+  @keyframes fade{ from{opacity:0; transform:translateY(6px);} to{opacity:1; transform:translateY(0);} }
+
+  /* ---------- HERO ---------- */
+  .hero{ padding:96px 0 84px; }
+  .hero .eyebrow{ margin-bottom:22px; }
+  .hero h1{
+    font-size:clamp(2.6rem, 6vw, 4.6rem);
+    line-height:1.03; letter-spacing:-0.01em;
+    max-width:14ch;
+  }
+  .hero h1 em{ font-style:italic; color:var(--accent); font-weight:400; }
+  .hero-sub{
+    max-width:46ch; font-size:1.08rem; line-height:1.6; color:var(--ink-soft);
+    margin-top:26px;
+  }
+  .hero-actions{ display:flex; gap:14px; margin-top:38px; flex-wrap:wrap; }
+
+  .stat-row{
+    display:grid; grid-template-columns:repeat(3,1fr); gap:0;
+    border-top:1px solid var(--line); margin-top:80px;
+  }
+  .stat{ padding:22px 0 0; border-right:1px solid var(--line); }
+  .stat:last-child{ border-right:none; }
+  .stat .num{ font-family:'Fraunces',serif; font-size:2.1rem; font-weight:400; }
+  .stat .label{ font-size:0.72rem; color:var(--ink-soft); margin-top:6px; }
+  @media (max-width:640px){
+    .stat-row{ grid-template-columns:1fr; }
+    .stat{ border-right:none; border-bottom:1px solid var(--line); padding-bottom:18px; }
+  }
+
+  /* ---------- SECTION HEADS ---------- */
+  .section{ padding:78px 0; border-top:1px solid var(--line); }
+  .section-head{
+    display:flex; justify-content:space-between; align-items:flex-end; gap:24px;
+    margin-bottom:46px; flex-wrap:wrap;
+  }
+  .section-head h2{ font-size:clamp(1.8rem,3.4vw,2.5rem); }
+  .section-head .view-all{ font-size:0.75rem; }
+
+  /* ---------- HOW IT WORKS ---------- */
+  .steps{ display:grid; grid-template-columns:repeat(3,1fr); gap:40px; }
+  @media (max-width:820px){ .steps{ grid-template-columns:1fr; gap:44px; } }
+  .step .idx{ font-family:'JetBrains Mono',monospace; font-size:0.78rem; color:var(--accent); }
+  .step h3{ font-size:1.5rem; margin:14px 0 10px; }
+  .step p{ color:var(--ink-soft); font-size:0.95rem; line-height:1.6; max-width:40ch; }
+
+  /* ---------- GARMENT SVG SWATCH ---------- */
+  .swatch{
+    aspect-ratio:4/5; width:100%; border-radius:1px; position:relative; overflow:hidden;
+    display:flex; align-items:center; justify-content:center;
+  }
+  .swatch svg{ width:56%; height:56%; }
+
+  /* ---------- COLLECTION GRID ---------- */
+  .grid-cards{ display:grid; grid-template-columns:repeat(3,1fr); gap:30px; }
+  @media (max-width:900px){ .grid-cards{ grid-template-columns:repeat(2,1fr); } }
+  @media (max-width:600px){ .grid-cards{ grid-template-columns:1fr; } }
+
+  .tag-card{
+    display:block; text-align:left; background:none; border:none; padding:0; cursor:pointer; color:var(--ink);
+    width:100%; font-family:inherit;
+  }
+  .tag-card .swatch{ margin-bottom:16px; border:1px solid var(--line); }
+  .tag-card .meta-row{
+    display:flex; justify-content:space-between; align-items:baseline;
+    font-family:'JetBrains Mono',monospace; font-size:0.68rem; color:var(--ink-soft);
+    letter-spacing:0.07em; margin-bottom:8px; text-transform:uppercase;
+  }
+  .tag-card h3{ font-size:1.3rem; margin-bottom:4px; }
+  .tag-card .designer{ font-size:0.85rem; color:var(--ink-soft); }
+
+  /* ---------- POPUP STRIP ---------- */
+  .popup-strip{
+    display:flex; align-items:center; justify-content:space-between; gap:24px;
+    background:var(--paper-deep); border:1px solid var(--line); padding:30px 34px; flex-wrap:wrap;
+  }
+  .popup-strip .l{ display:flex; align-items:baseline; gap:18px; flex-wrap:wrap; }
+  .popup-strip .l .serif{ font-size:1.3rem; }
+
+  /* ---------- FOOTER ---------- */
+  footer{ border-top:1px solid var(--line); padding:64px 0 40px; }
+  .footer-top{
+    display:flex; justify-content:space-between; gap:40px; flex-wrap:wrap;
+    padding-bottom:48px;
+  }
+  .footer-brand .serif{ font-size:1.5rem; }
+  .footer-brand p{ color:var(--ink-soft); font-size:0.85rem; max-width:32ch; margin-top:14px; line-height:1.6; }
+  .waitlist{ display:flex; gap:0; max-width:360px; border:1px solid var(--ink); }
+  .waitlist input{
+    flex:1; border:none; background:transparent; padding:12px 14px; font-family:'Archivo',sans-serif;
+    font-size:0.85rem; color:var(--ink); min-width:0;
+  }
+  .waitlist input::placeholder{ color:var(--ink-soft); }
+  .waitlist input:focus{ outline:none; }
+  .waitlist button{
+    border:none; background:var(--ink); color:var(--paper); padding:0 18px;
+    font-family:'JetBrains Mono',monospace; font-size:0.68rem; text-transform:uppercase; letter-spacing:0.08em; cursor:pointer;
+  }
+  .footer-cols{ display:flex; gap:64px; flex-wrap:wrap; }
+  .footer-col .mono{ font-size:0.68rem; color:var(--ink-soft); margin-bottom:14px; display:block; }
+  .footer-col button{
+    display:block; background:none; border:none; color:var(--ink); cursor:pointer; padding:5px 0;
+    font-size:0.88rem; text-align:left;
+  }
+  .footer-bottom{
+    border-top:1px solid var(--line); padding-top:22px; display:flex; justify-content:space-between;
+    color:var(--ink-soft); font-size:0.72rem; flex-wrap:wrap; gap:10px;
+  }
+  .inline-confirm{
+    font-size:0.75rem; color:var(--accent); margin-top:10px; display:none;
+  }
+  .inline-confirm.show{ display:block; }
+
+  /* ---------- DESIGNERS PAGE ---------- */
+  .page-head{ padding:64px 0 46px; }
+  .page-head .eyebrow{ margin-bottom:18px; }
+  .page-head h1{ font-size:clamp(2.2rem,4.6vw,3.4rem); max-width:20ch; }
+  .page-head p{ color:var(--ink-soft); max-width:52ch; margin-top:18px; line-height:1.6; }
+
+  .designers-grid{ padding-bottom:90px; }
+
+  /* ---------- DESIGNER DETAIL ---------- */
+  .detail-head{ padding:56px 0 40px; }
+  .back-link{
+    display:inline-flex; align-items:center; gap:8px; font-size:0.75rem; color:var(--ink-soft);
+    background:none; border:none; cursor:pointer; padding:0; margin-bottom:34px; font-family:'JetBrains Mono',monospace;
+    text-transform:uppercase; letter-spacing:0.07em;
+  }
+  .detail-top{ display:grid; grid-template-columns:1.1fr 1fr; gap:60px; align-items:start; }
+  @media (max-width:820px){ .detail-top{ grid-template-columns:1fr; gap:36px; } }
+  .detail-meta{ display:flex; flex-direction:column; gap:4px; margin-bottom:22px; }
+  .detail-meta .mono{ font-size:0.7rem; color:var(--ink-soft); }
+  .detail-top h1{ font-size:clamp(2.2rem,5vw,3.6rem); margin-bottom:20px; }
+  .detail-top .designer-name{ font-size:1.05rem; color:var(--ink-soft); margin-bottom:6px; }
+  .detail-top p.bio{ line-height:1.7; color:var(--ink-soft); font-size:1rem; margin-top:22px; }
+  .detail-top .quote{
+    font-family:'Fraunces',serif; font-style:italic; font-size:1.3rem; line-height:1.5;
+    border-left:2px solid var(--accent); padding-left:20px; margin-top:30px; color:var(--ink);
+  }
+  .detail-swatch .swatch{ aspect-ratio:3/4; border:1px solid var(--line); }
+
+  .garment-strip{ display:grid; grid-template-columns:repeat(4,1fr); gap:20px; padding:60px 0; border-top:1px solid var(--line); margin-top:70px; }
+  @media (max-width:760px){ .garment-strip{ grid-template-columns:repeat(2,1fr); } }
+  .garment-strip .swatch{ aspect-ratio:3/4; border:1px solid var(--line); margin-bottom:10px; }
+  .garment-strip .g-label{ font-family:'JetBrains Mono',monospace; font-size:0.66rem; color:var(--ink-soft); text-transform:uppercase; letter-spacing:0.06em; }
+
+  /* ---------- POPUPS PAGE ---------- */
+  .popup-list{ padding-bottom:90px; }
+  .popup-item{
+    display:grid; grid-template-columns:140px 1fr auto; gap:30px; align-items:center;
+    padding:34px 0; border-top:1px solid var(--line);
+  }
+  .popup-item:last-child{ border-bottom:1px solid var(--line); }
+  @media (max-width:700px){ .popup-item{ grid-template-columns:1fr; gap:10px; } }
+  .popup-item .date{ font-family:'JetBrains Mono',monospace; font-size:0.78rem; color:var(--accent); }
+  .popup-item h3{ font-size:1.4rem; margin-bottom:6px; }
+  .popup-item .loc{ color:var(--ink-soft); font-size:0.88rem; }
+  .popup-item .status{
+    font-family:'JetBrains Mono',monospace; font-size:0.65rem; text-transform:uppercase; letter-spacing:0.07em;
+    border:1px solid var(--line); padding:6px 12px; white-space:nowrap; color:var(--ink-soft);
+  }
+  .popup-item .status.open{ color:var(--accent); border-color:var(--accent); }
+
+  /* ---------- APPLY PAGE ---------- */
+  .apply-wrap{ display:grid; grid-template-columns:1fr 1fr; gap:70px; padding-bottom:100px; }
+  @media (max-width:860px){ .apply-wrap{ grid-template-columns:1fr; gap:44px; } }
+  .apply-info h2{ font-size:2.1rem; margin-bottom:20px; }
+  .apply-info p{ color:var(--ink-soft); line-height:1.7; margin-bottom:26px; }
+  .apply-list{ list-style:none; padding:0; margin:0; display:flex; flex-direction:column; gap:18px; }
+  .apply-list li{ display:flex; gap:14px; font-size:0.92rem; line-height:1.5; }
+  .apply-list .n{ font-family:'JetBrains Mono',monospace; font-size:0.75rem; color:var(--accent); padding-top:2px; }
+
+  form.apply-form{ display:flex; flex-direction:column; gap:22px; }
+  .field{ display:flex; flex-direction:column; gap:8px; }
+  .field label{ font-family:'JetBrains Mono',monospace; font-size:0.68rem; text-transform:uppercase; letter-spacing:0.08em; color:var(--ink-soft); }
+  .field input, .field textarea{
+    background:var(--paper-raise); border:1px solid var(--line); padding:13px 14px;
+    font-family:'Archivo',sans-serif; font-size:0.92rem; color:var(--ink); border-radius:1px;
+  }
+  .field input:focus, .field textarea:focus{ outline:none; border-color:var(--accent); }
+  .field textarea{ resize:vertical; min-height:100px; }
+  .form-confirm{
+    display:none; border:1px solid var(--accent); padding:24px; margin-top:6px;
+  }
+  .form-confirm.show{ display:block; }
+  .form-confirm .serif{ font-size:1.2rem; margin-bottom:6px; }
+  .form-confirm p{ color:var(--ink-soft); font-size:0.88rem; margin-top:4px; }
+  form.apply-form.hide{ display:none; }
+</style>
+</head>
+<body>
+<header class="site">
+  <div class="nav-inner">
+    <button class="brand" data-route="/" aria-label="Academic MTL home">ACADEMIC <em>MTL</em></button>
+    <button class="menu-toggle" id="menuToggle" aria-label="Toggle navigation" aria-expanded="false">
+      <svg width="16" height="12" viewBox="0 0 16 12" fill="none"><path d="M0 1H16M0 6H16M0 11H16" stroke="currentColor" stroke-width="1.2"/></svg>
+    </button>
+    <nav class="links mono" id="navLinks">
+      <button data-route="/">Home</button>
+      <button data-route="/designers">Designers</button>
+      <button data-route="/popups">Pop-Ups</button>
+      <button data-route="/apply">Apply</button>
+    </nav>
+    <div class="nav-cta">
+      <a href="#/apply" class="btn solid mono" data-route="/apply">Apply as a Designer</a>
+    </div>
+  </div>
+</header>
+
+<main>
+
+  <!-- ================= HOME ================= -->
+  <section class="page" id="page-home">
+    <div class="wrap hero">
+      <div class="eyebrow">Montreal, Quebec &nbsp;/&nbsp; Founded 2026</div>
+      <h1>From the graduation runway <em>to the sales floor.</em></h1>
+      <p class="hero-sub">Academic MTL takes the strongest collections coming out of Montreal fashion programs and handles everything after the final crit: production, platforming, and pop-ups &mdash; so designers can keep designing.</p>
+      <div class="hero-actions">
+        <a href="#/designers" class="btn solid" data-route="/designers">View Collections</a>
+        <a href="#/apply" class="btn" data-route="/apply">Apply as a Designer</a>
+      </div>
+      <div class="stat-row">
+        <div class="stat"><div class="num">6</div><div class="mono label">Collections in development</div></div>
+        <div class="stat"><div class="num">1</div><div class="mono label">Manufacturing partner secured</div></div>
+        <div class="stat"><div class="num">0</div><div class="mono label">Pop-ups held &mdash; first one soon</div></div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="wrap">
+        <div class="section-head">
+          <h2>How it works</h2>
+        </div>
+        <div class="steps">
+          <div class="step">
+            <div class="idx mono">01 &mdash; Design</div>
+            <h3>You bring the vision</h3>
+            <p>Submit a graduate or independent collection. We look for point of view first &mdash; polish, we can help with.</p>
+          </div>
+          <div class="step">
+            <div class="idx mono">02 &mdash; Produce</div>
+            <h3>We handle manufacturing</h3>
+            <p>Sampling, fit approval, and small-batch production through our Montreal-area manufacturing partners &mdash; on your name, at your standard.</p>
+          </div>
+          <div class="step">
+            <div class="idx mono">03 &mdash; Platform &amp; Sell</div>
+            <h3>We get it in front of people</h3>
+            <p>Your collection lives on our site and comes to life at our pop-ups. You get paid on what sells, with full visibility into the numbers.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="wrap">
+        <div class="section-head">
+          <h2>Featured collections</h2>
+          <button class="btn view-all" data-route="/designers">All Designers &rarr;</button>
+        </div>
+        <div class="grid-cards" id="homeFeatured"></div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="wrap">
+        <div class="popup-strip">
+          <div class="l">
+            <span class="serif">Our first pop-up is coming this fall.</span>
+            <span class="mono" style="font-size:0.68rem; color:var(--ink-soft);">Location to be announced</span>
+          </div>
+          <button class="btn solid mono" data-route="/popups">See Pop-Up Details</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= DESIGNERS LIST ================= -->
+  <section class="page" id="page-designers">
+    <div class="wrap page-head">
+      <div class="eyebrow">The Roster</div>
+      <h1>Six collections. Six points of view.</h1>
+      <p>Every designer here handles their own vision. We handle the rest &mdash; from first sample to final sale.</p>
+    </div>
+    <div class="wrap designers-grid">
+      <div class="grid-cards" id="designersGrid"></div>
+    </div>
+  </section>
+
+  <!-- ================= DESIGNER DETAIL ================= -->
+  <section class="page" id="page-detail">
+    <div class="wrap detail-head">
+      <button class="back-link" data-route="/designers">&larr; All Designers</button>
+      <div class="detail-top">
+        <div>
+          <div class="detail-meta">
+            <span class="mono" id="d-code"></span>
+          </div>
+          <h1 class="serif" id="d-title"></h1>
+          <div class="designer-name" id="d-name"></div>
+          <p class="bio" id="d-bio"></p>
+          <div class="quote" id="d-quote"></div>
+        </div>
+        <div class="detail-swatch">
+          <div class="swatch" id="d-hero-swatch"></div>
+        </div>
+      </div>
+    </div>
+    <div class="wrap">
+      <div class="garment-strip" id="d-garments"></div>
+    </div>
+  </section>
+
+  <!-- ================= POPUPS ================= -->
+  <section class="page" id="page-popups">
+    <div class="wrap page-head">
+      <div class="eyebrow">Events</div>
+      <h1>Where to find us in person.</h1>
+      <p>We're building toward our first pop-up &mdash; a chance to see the collections in person, meet the designers, and shop directly. Dates and venues below as they're confirmed.</p>
+    </div>
+    <div class="wrap popup-list">
+      <div class="popup-item">
+        <div class="date mono">Fall 2026</div>
+        <div>
+          <h3>Launch Pop-Up</h3>
+          <div class="loc">Mile End, Montreal &mdash; venue to be announced</div>
+        </div>
+        <div class="status open mono">Planning</div>
+      </div>
+      <div class="popup-item">
+        <div class="date mono">Winter 2026</div>
+        <div>
+          <h3>Holiday Market Presence</h3>
+          <div class="loc">Montreal &mdash; venue to be announced</div>
+        </div>
+        <div class="status mono">Concept</div>
+      </div>
+      <div class="popup-item">
+        <div class="date mono">TBD</div>
+        <div>
+          <h3>Graduate Showcase</h3>
+          <div class="loc">In partnership with a Montreal fashion program &mdash; details TBA</div>
+        </div>
+        <div class="status mono">Concept</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= APPLY ================= -->
+  <section class="page" id="page-apply">
+    <div class="wrap">
+      <div class="apply-wrap" style="padding-top:64px;">
+        <div class="apply-info">
+          <div class="eyebrow">For Designers</div>
+          <h2 class="serif" style="margin-top:22px;">Bring us your collection.</h2>
+          <p>We're looking for graduating and recently graduated designers with a real point of view. If you have sketches, a lookbook, or finished samples, we want to see them.</p>
+          <ul class="apply-list">
+            <li><span class="n mono">01</span><span>We review your portfolio and set up a conversation.</span></li>
+            <li><span class="n mono">02</span><span>We agree on terms &mdash; ownership stays with you, always.</span></li>
+            <li><span class="n mono">03</span><span>We sample, produce, and get your collection in front of people.</span></li>
+          </ul>
+        </div>
+        <div>
+          <form class="apply-form" id="applyForm" action="https://formspree.io/f/YOUR_APPLY_FORM_ID" method="POST">
+            <div class="field">
+              <label for="f-name">Full name</label>
+              <input id="f-name" type="text" required placeholder="Your name" />
+            </div>
+            <div class="field">
+              <label for="f-email">Email</label>
+              <input id="f-email" type="email" required placeholder="you@email.com" />
+            </div>
+            <div class="field">
+              <label for="f-school">Program / school</label>
+              <input id="f-school" type="text" placeholder="e.g. BFA Fashion Design, Class of 2026" />
+            </div>
+            <div class="field">
+              <label for="f-portfolio">Portfolio or Instagram link</label>
+              <input id="f-portfolio" type="text" placeholder="https://" />
+            </div>
+            <div class="field">
+              <label for="f-message">Tell us about your collection</label>
+              <textarea id="f-message" placeholder="What's the story behind it?"></textarea>
+            </div>
+            <button type="submit" class="btn solid mono" style="align-self:flex-start;">Submit Application</button>
+          </form>
+          <div class="form-confirm" id="applyConfirm">
+            <div class="serif">Thanks &mdash; we'll be in touch.</div>
+            <p>We read every submission. If it's a fit, someone from Academic MTL will reach out to set up a conversation.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="footer-top">
+      <div class="footer-brand">
+        <div class="serif">ACADEMIC <em style="font-style:italic; color:var(--accent);">MTL</em></div>
+        <p>An end-to-end platform for Montreal fashion graduates &mdash; design, production, and sales, under one roof.</p>
+        <div style="margin-top:24px;">
+          <div class="mono" style="font-size:0.68rem; color:var(--ink-soft); margin-bottom:10px;">Stay in the loop</div>
+          <form class="waitlist" id="waitlistForm" action="https://formspree.io/f/YOUR_WAITLIST_FORM_ID" method="POST">
+            <input type="email" required placeholder="your@email.com" aria-label="Email for updates" />
+            <button type="submit">Notify Me</button>
+          </form>
+          <div class="inline-confirm" id="waitlistConfirm">You're on the list &mdash; thanks for the interest.</div>
+        </div>
+      </div>
+      <div class="footer-cols">
+        <div class="footer-col">
+          <span class="mono">Site</span>
+          <button data-route="/">Home</button>
+          <button data-route="/designers">Designers</button>
+          <button data-route="/popups">Pop-Ups</button>
+          <button data-route="/apply">Apply</button>
+        </div>
+        <div class="footer-col">
+          <span class="mono">Based In</span>
+          <span style="padding:5px 0; font-size:0.88rem; display:block; color:var(--ink-soft);">Montreal, Quebec</span>
+          <span style="padding:5px 0; font-size:0.88rem; display:block; color:var(--ink-soft);">hello@academicmtl.ca</span>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom mono">
+      <span>&copy; 2026 Academic MTL</span>
+      <span>Concept preview &mdash; v1</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+(function(){
+  // ---------- Garment illustration library (flat SVG silhouettes as placeholder "photography") ----------
+  function garmentSvg(kind, fg, bg){
+    const shapes = {
+      jacket: '<path d="M35 8 L50 2 L65 8 L78 20 L72 30 L65 24 L65 92 L35 92 L35 24 L28 30 L22 20 Z" fill="'+fg+'"/><path d="M50 2 L50 92" stroke="'+bg+'" stroke-width="1.5" opacity="0.5"/>',
+      dress: '<path d="M40 5 L60 5 L64 22 L74 90 L26 90 L36 22 Z" fill="'+fg+'"/><path d="M40 5 L36 22 L64 22 L60 5" fill="'+bg+'" opacity="0.35"/>',
+      trouser: '<path d="M32 4 L68 4 L70 40 L60 92 L52 92 L50 44 L48 92 L40 92 L30 40 Z" fill="'+fg+'"/>',
+      blouson: '<path d="M50 3 L72 14 L78 46 L68 50 L66 92 L34 92 L32 50 L22 46 L28 14 Z" fill="'+fg+'"/><circle cx="50" cy="30" r="2.2" fill="'+bg+'" opacity="0.6"/><circle cx="50" cy="44" r="2.2" fill="'+bg+'" opacity="0.6"/><circle cx="50" cy="58" r="2.2" fill="'+bg+'" opacity="0.6"/>',
+      knit: '<path d="M28 10 L50 2 L72 10 L80 30 L70 36 L70 92 L30 92 L30 36 L20 30 Z" fill="'+fg+'"/><path d="M30 40 H70 M30 55 H70 M30 70 H70" stroke="'+bg+'" stroke-width="1.3" opacity="0.4"/>',
+      coat: '<path d="M50 3 L74 12 L80 24 L70 30 L70 94 L58 94 L58 46 L50 60 L42 46 L42 94 L30 94 L30 30 L20 24 L26 12 Z" fill="'+fg+'"/>',
+      shirt: '<path d="M38 6 L62 6 L70 16 L78 30 L68 36 L64 26 L64 92 L36 92 L36 26 L32 36 L22 30 L30 16 Z" fill="'+fg+'"/><path d="M50 6 L46 20 L54 20 Z" fill="'+bg+'" opacity="0.5"/>',
+      skirt: '<path d="M38 4 L62 4 L82 88 L18 88 Z" fill="'+fg+'"/><path d="M38 4 L62 4 L60 18 L40 18 Z" fill="'+bg+'" opacity="0.35"/>'
+    };
+    return '<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">'+shapes[kind]+'</svg>';
+  }
+  function swatchStyle(a, b, angle){
+    return 'background:linear-gradient('+(angle||135)+'deg, '+a+' 0%, '+b+' 100%);';
+  }
+
+  // ---------- Designer / collection data (fictional placeholders) ----------
+  var DESIGNERS = [
+    {
+      slug:'sediment', code:'AMTL / SS27 / 01',
+      name:'Élodie Marchand', collection:'SEDIMENT',
+      bio:'Élodie builds outerwear the way geology builds rock — in visible layers. Raw edges and exposed seams are left intentional, treated as texture instead of flaw.',
+      quote:'“I wanted the construction to be part of the story, not hidden inside a lining.”',
+      garments:['jacket','coat','trouser','blouson'],
+      c1:'#8B7E63', c2:'#4A4436'
+    },
+    {
+      slug:'night-shift', code:'AMTL / FW26 / 02',
+      name:'Samuel Okonkwo-Tremblay', collection:'NIGHT SHIFT',
+      bio:'Drawing on Montreal’s garment-district history, Samuel reworks factory workwear into knitwear built for people who move through the city after dark.',
+      quote:'“Workwear was never about looking tough. It was about surviving a long shift. That’s the brief.”',
+      garments:['knit','jacket','trouser','shirt'],
+      c1:'#2B3A67', c2:'#12172B'
+    },
+    {
+      slug:'glassware', code:'AMTL / SS27 / 03',
+      name:'Ren Takahashi-Bouchard', collection:'GLASSWARE',
+      bio:'Ren’s sheer layering technique treats fabric like poured glass — structured where it needs to hold shape, transparent everywhere else.',
+      quote:'“I want you to see the body underneath the idea, not hide it.”',
+      garments:['dress','shirt','skirt','blouson'],
+      c1:'#A9A79E', c2:'#6B6A61'
+    },
+    {
+      slug:'terrain', code:'AMTL / FW26 / 04',
+      name:'Camille Fortin', collection:'TERRAIN',
+      bio:'Technical outerwear engineered for actual Quebec winters — sealed seams, high-loft insulation, and a silhouette built to layer.',
+      quote:'“A lot of “technical” fashion has never been tested below minus twenty. Mine has.”',
+      garments:['coat','jacket','trouser','knit'],
+      c1:'#5C6B5E', c2:'#2C352D'
+    },
+    {
+      slug:'archive-04', code:'AMTL / SS27 / 05',
+      name:'Aïcha Ndiaye', collection:'ARCHIVE 04',
+      bio:'Aïcha sources deadstock and end-of-roll denim, piecing patchwork tailoring where every panel comes from a different bolt of fabric.',
+      quote:'“Every seam is a decision about which two fabrics get to meet.”',
+      garments:['jacket','skirt','trouser','shirt'],
+      c1:'#496485', c2:'#28374B'
+    },
+    {
+      slug:'still-life', code:'AMTL / FW26 / 06',
+      name:'Mathieu Roy-Lefebvre', collection:'STILL LIFE',
+      bio:'A quiet, monochrome collection built entirely around proportion and drape rather than print or color. Minimal, but not plain.',
+      quote:'“Remove color and you have nowhere left to hide a bad line.”',
+      garments:['coat','shirt','trouser','dress'],
+      c1:'#726A5C', c2:'#221F1A'
+    }
+  ];
+
+  function cardHTML(d){
+    var g = d.garments[0];
+    return '<button class="tag-card" data-route="/designer/'+d.slug+'">'
+      + '<div class="swatch" style="'+swatchStyle(d.c1,d.c2)+'">'+garmentSvg(g,'#EDEAE1','#1E1C18')+'</div>'
+      + '<div class="meta-row"><span>'+d.code+'</span><span>View →</span></div>'
+      + '<h3 class="serif">'+d.collection+'</h3>'
+      + '<div class="designer">'+d.name+'</div>'
+      + '</button>';
+  }
+
+  var designersGrid = document.getElementById('designersGrid');
+  var homeFeatured = document.getElementById('homeFeatured');
+  designersGrid.innerHTML = DESIGNERS.map(cardHTML).join('');
+  homeFeatured.innerHTML = DESIGNERS.slice(0,3).map(cardHTML).join('');
+
+  function renderDetail(slug){
+    var d = DESIGNERS.find(function(x){ return x.slug === slug; }) || DESIGNERS[0];
+    document.getElementById('d-code').textContent = d.code;
+    document.getElementById('d-title').textContent = d.collection;
+    document.getElementById('d-name').textContent = 'By ' + d.name;
+    document.getElementById('d-bio').textContent = d.bio;
+    document.getElementById('d-quote').textContent = d.quote;
+    var hero = document.getElementById('d-hero-swatch');
+    hero.setAttribute('style', 'aspect-ratio:3/4;' + swatchStyle(d.c1, d.c2, 150));
+    hero.innerHTML = garmentSvg(d.garments[0], '#EDEAE1', '#1E1C18');
+    var strip = document.getElementById('d-garments');
+    strip.innerHTML = d.garments.map(function(g, i){
+      return '<div><div class="swatch" style="'+swatchStyle(i%2?d.c2:d.c1, i%2?d.c1:d.c2, 45+i*30)+'">'+garmentSvg(g,'#EDEAE1','#1E1C18')+'</div>'
+        + '<div class="g-label">Look 0'+(i+1)+' &mdash; '+g+'</div></div>';
+    }).join('');
+  }
+
+  // ---------- Router ----------
+  var pages = { '': 'home', 'designers':'designers', 'popups':'popups', 'apply':'apply' };
+  function setActivePage(id){
+    document.querySelectorAll('.page').forEach(function(p){ p.classList.remove('active'); });
+    document.getElementById('page-'+id).classList.add('active');
+    window.scrollTo({top:0, behavior:'instant' in window ? 'instant' : 'auto'});
+  }
+  function setActiveNav(route){
+    document.querySelectorAll('nav.links button').forEach(function(b){
+      b.classList.toggle('active', b.getAttribute('data-route') === route);
+    });
+  }
+  function handleRoute(){
+    var hash = window.location.hash.replace(/^#\/?/, '');
+    var parts = hash.split('/').filter(Boolean);
+    if(parts[0] === 'designer' && parts[1]){
+      renderDetail(parts[1]);
+      setActivePage('detail');
+      setActiveNav('/designers');
+    } else if(parts[0] === 'designers'){
+      setActivePage('designers'); setActiveNav('/designers');
+    } else if(parts[0] === 'popups'){
+      setActivePage('popups'); setActiveNav('/popups');
+    } else if(parts[0] === 'apply'){
+      setActivePage('apply'); setActiveNav('/apply');
+    } else {
+      setActivePage('home'); setActiveNav('/');
+    }
+    document.getElementById('navLinks').classList.remove('open');
+  }
+  document.addEventListener('click', function(e){
+    var el = e.target.closest('[data-route]');
+    if(!el) return;
+    e.preventDefault();
+    var route = el.getAttribute('data-route');
+    window.location.hash = '#' + route;
+  });
+  window.addEventListener('hashchange', handleRoute);
+  handleRoute();
+
+  // ---------- Mobile menu ----------
+  document.getElementById('menuToggle').addEventListener('click', function(){
+    var nav = document.getElementById('navLinks');
+    var open = nav.classList.toggle('open');
+    this.setAttribute('aria-expanded', open);
+  });
+
+  // ---------- Forms: wired to Formspree ----------
+  // SETUP: create a form at formspree.io for each of the two IDs below, then
+  // replace YOUR_APPLY_FORM_ID and YOUR_WAITLIST_FORM_ID with the real IDs
+  // Formspree gives you (shown right after you create each form). See README.md.
+  var APPLY_FORM_ENDPOINT = 'https://formspree.io/f/YOUR_APPLY_FORM_ID';
+  var WAITLIST_FORM_ENDPOINT = 'https://formspree.io/f/YOUR_WAITLIST_FORM_ID';
+
+  function submitToFormspree(endpoint, data, onSuccess, onError){
+    if(endpoint.indexOf('YOUR_') !== -1){
+      console.warn('Formspree endpoint not configured yet — see README.md. Showing demo confirmation only.');
+      onSuccess();
+      return;
+    }
+    fetch(endpoint, {
+      method: 'POST',
+      headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' },
+      body: JSON.stringify(data)
+    }).then(function(res){
+      if(res.ok){ onSuccess(); } else { onError(); }
+    }).catch(onError);
+  }
+
+  document.getElementById('applyForm').addEventListener('submit', function(e){
+    e.preventDefault();
+    var payload = {
+      name: document.getElementById('f-name').value,
+      email: document.getElementById('f-email').value,
+      school: document.getElementById('f-school').value,
+      portfolio: document.getElementById('f-portfolio').value,
+      message: document.getElementById('f-message').value
+    };
+    var form = this;
+    submitToFormspree(APPLY_FORM_ENDPOINT, payload, function(){
+      form.classList.add('hide');
+      document.getElementById('applyConfirm').classList.add('show');
+    }, function(){
+      alert('Something went wrong sending your application — please try again or email us directly.');
+    });
+  });
+  document.getElementById('waitlistForm').addEventListener('submit', function(e){
+    e.preventDefault();
+    var emailInput = this.querySelector('input[type="email"]');
+    var payload = { email: emailInput.value };
+    var form = this;
+    submitToFormspree(WAITLIST_FORM_ENDPOINT, payload, function(){
+      document.getElementById('waitlistConfirm').classList.add('show');
+      form.reset();
+    }, function(){
+      alert('Something went wrong signing you up — please try again.');
+    });
+  });
+})();
+</script>
+
+</body></html>
